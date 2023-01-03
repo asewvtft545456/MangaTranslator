@@ -1,0 +1,10 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>twitter.png</file>
+    <file>marker.png</file>
+    <file>eraser.png</file>
+    <file>forward.png</file>
+    <file>downArrow.png</file>
+    <file>forward1.png</file>
+  </qresource>
+</RCC>

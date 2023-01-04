@@ -46,6 +46,7 @@ The most important thing here is that you can change the translator. By default 
 # Twitter button
 When you click on the the button, a bar will appear at the top. You can download "manga" from twitter.
 <img width="945" alt="image" src="https://user-images.githubusercontent.com/69278077/210465637-d52a8f34-417b-4b4a-af28-131661562529.png">
+You need to sign up on https://developer.twitter.com to the API key and other required keys.
 
 Example of a valid link would be: https://twitter.com/sanka_kumaru/status/1589452581910335488
 

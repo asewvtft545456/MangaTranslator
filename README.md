@@ -29,7 +29,7 @@ Example of automatic translation:
 
 Manual Translation:
 You can manually translate by clicking on the Manual button. You draw rectangles on the text you want translated.
-<img width="960" alt="image" src="https://user-images.githubusercontent.com/69278077/210464824-44dc95ff-3f85-458a-8b94-e2356d9c9a2d.png">
+<img width="960" alt="image" src="https://user-images.githubusercontent.com/69278077/210467473-fcf90aad-cd17-4c4e-af02-b795b112828f.png">
 On the left, you change the color of the rectangles, the text, etc.
 
 Settings button:

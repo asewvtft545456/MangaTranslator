@@ -13,6 +13,7 @@ If you don't have VScode, open the repo within your IDE and go to the terminal:
 1) Type "virtualenv venv"
 2) Then activate the virtual environment by typing ".venv\Scripts\activate"
 3) Finally, install the required packages by typing "pip install -r requirements.txt"
+4) Run Main.py
 
 # Manga Translator
 <img width="956" alt="image" src="https://user-images.githubusercontent.com/69278077/210460952-7684f6c5-efa3-4607-b6f2-f13980a01bff.png">

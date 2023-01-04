@@ -29,8 +29,11 @@ Example of automatic translation:
 
 Manual Translation:
 You can manually translate by clicking on the Manual button. You draw rectangles on the text you want translated.
+Before:
 <img width="960" alt="image" src="https://user-images.githubusercontent.com/69278077/210467473-fcf90aad-cd17-4c4e-af02-b795b112828f.png">
 On the left, you change the color of the rectangles, the text, etc.
+After:
+<img width="960" alt="image" src="https://user-images.githubusercontent.com/69278077/210470169-ffe6b043-e9b3-4920-8c8c-c381f2c468ea.png">
 
 Settings button:
 The most important thing here is that you can change the translator. By default it is set to Bing.

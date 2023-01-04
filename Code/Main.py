@@ -465,6 +465,7 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
         self.num = -1
         self.index = 0
         self.im.img = None
+        self.im.setPixmap(QPixmap("Icons\pure-white-background-85a2a7fd.jpg"))
 
     def undo(self):
         lastRect = self.im.img

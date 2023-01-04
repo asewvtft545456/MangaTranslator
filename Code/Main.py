@@ -5,9 +5,9 @@ import sys
 from PyQt5 import QtWidgets
 from mainApp import Ui_MainWindow
 from Canvas import Image
-from PyQt5.QtCore import QThreadPool, pyqtSignal, Qt, QPoint, QRect, QRectF
+from PyQt5.QtCore import QThreadPool, pyqtSignal, Qt, QPoint, QRect, QRectF, QEventLoop
 from TranslateManga import Translate
-from DownloadTweet import *
+from DownloadTweet import Twitter
 from Retranslate import Retranslate
 from PIL import ImageQt
 import img2pdf
@@ -70,6 +70,7 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
         self.num = -1
         self.isSort = False
         self.widget_2.hide()
+        self.advanceSettings1()
 
     
     def appMod(self):
@@ -94,6 +95,7 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
         self.Form = QtWidgets.QWidget()
         self.ui = Ui_Form()
         self.ui.setupUi(self.Form)
+        self.Form.setAttribute(Qt.WA_DeleteOnClose)
         self.Form.setMinimumSize(QtCore.QSize(720, 415))
         self.im = Image(self.imageWidget)
         self.im.setScaledContents(True)
@@ -151,6 +153,7 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
         self.undoButton.clicked.connect(self.undo)
         self.redoButton.clicked.connect(self.redo)
         self.eraseButton.clicked.connect(self.startErase)
+        
 
     def stylesheet1(self):
         self.bar.setStyleSheet("QProgressBar\n"
@@ -305,6 +308,16 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
             self.on1 = False
             self.shownSetting = False
 
+    def advanceSettings1(self):
+        self.ui.translatePath.setText(str(self.setting.Translated))
+        self.ui.cropPath.setText(str(self.setting.cropText))
+        self.ui.deeplKey.setText(str(self.setting.downLoad))
+        self.ui.consumerKey.setText(str(self.setting.consumer_key))
+        self.ui.consumerSecret.setText(str(self.setting.consumer_secret))
+        self.ui.accessToken.setText(str(self.setting.access_token))
+        self.ui.accessTokenSecret.setText(str(self.setting.access_token_secret))
+        self.ui.bearerToken.setText(str(self.setting.bearer_token))
+
     def advanceSettings(self):
         self.ui.translatePath.setText(str(self.setting.Translated))
         self.ui.cropPath.setText(str(self.setting.cropText))
@@ -328,22 +341,37 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
         bearer_token = self.ui.bearerToken.text()
         if save != self.setting.Translated:
             self.setting.updateSetting("Paths", "Translated", save)
+            self.ui.translatePath.setText(save)
+
         if crop != self.setting.cropText:
             self.setting.updateSetting("Paths", "cropText", crop)
+            self.ui.cropPath.setText(crop)
+
         if download != self.setting.downLoad:
             self.setting.updateSetting("Paths", "Download", download) 
+            self.ui.deeplKey.setText(download)
+
         if consumer_key != self.setting.consumer_key:
             self.setting.updateSetting("Twitter", "Consumer key", consumer_key)
+            self.ui.consumerKey.setText(consumer_key)
+
         if consumer_secret != self.setting.consumer_secret:
             self.setting.updateSetting("Twitter", "Consumer secret", consumer_secret)
+            self.ui.consumerSecret.setText(consumer_secret)
+
         if access_token != self.setting.access_token:
             self.setting.updateSetting("Twitter", "Access token", access_token)
+            self.ui.accessToken.setText(access_token)
+
         if access_token_secret != self.setting.access_token_secret:
             self.setting.updateSetting("Twitter", "Access token secret", access_token_secret)
+            self.ui.accessTokenSecret.setText(access_token_secret)
+
         if bearer_token != self.setting.bearer_token:
             if "%" in bearer_token:
                 bearer_token = str(bearer_token.split("%"))
                 self.setting.updateSetting("Twitter", "Bearer token", bearer_token)
+                self.ui.bearerToken.setText(bearer_token)
     
     def sortFile(self, n):
         if n and self.files != []:
@@ -491,14 +519,22 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.setting.downLoad == "":
             directory = QFileDialog.getExistingDirectory(self, 'Select a directory')
             self.setting.updateSetting("Paths", "Download", directory)
-            self.ui.deeplKey.setText(self.setting.downLoad)
+            self.setting.getUpdateInfo()
+            self.ui.deeplKey.setText(directory)
         try:
             if self.setting.consumer_key == "None" or self.setting.consumer_secret == "None" or self.setting.access_token == "None" or self.setting.access_token_secret == "None" or self.setting.bearer_token == "None":
                 self.Form.show()
+                loop = QEventLoop()
+                self.Form.destroyed.connect(loop.quit)
+                loop.exec()
+                print("finished")
+            self.setting.getUpdateInfo()
             link = self.linkBar.text()
-            images = getImageUrl(link)
-            self.files = download(images)
-            self.im.img = self.files[0]
+            twitter = Twitter()
+            images = twitter.getImageUrl(link)
+            self.files = twitter.download(images)
+            if self.files != []:
+                self.im.img = self.files[0]
             self.showImage()
             self.linkBar.clear()
         except:

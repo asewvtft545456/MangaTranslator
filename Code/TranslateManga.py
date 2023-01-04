@@ -75,7 +75,10 @@ class Translate(QRunnable):
             # pprint(finalText)
 
             if self.source == None and finalText != {}:
-                self.source = langid.classify(list(finalText.values())[0])[0]
+                for x in list(finalText.values()):
+                    if x != []:
+                        self.source = langid.classify(x[0])[0]
+                        break
 
             newList = self.manga.translate(finalText, self.name, self.source)
             if newList == "ConnectionError":

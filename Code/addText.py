@@ -1,4 +1,5 @@
 #Code was written by Yoni Chechik on Stack Overflow
+#Original code: https://stackoverflow.com/questions/27647424/opencv-puttext-new-line-character
 
 from typing import Optional, Tuple
 

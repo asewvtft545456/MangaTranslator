@@ -488,11 +488,11 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
             self.isClicked = False
             self.index = 0
             self.changeTranslation.clear()
+        if self.setting.downLoad == "":
+            directory = QFileDialog.getExistingDirectory(self, 'Select a directory')
+            self.setting.updateSetting("Paths", "Download", directory)
+            self.ui.deeplKey.setText(self.setting.downLoad)
         try:
-            if self.setting.downLoad == "":
-                directory = QFileDialog.getExistingDirectory(self, 'Select a directory')
-                self.setting.updateSetting("Paths", "Download", directory)
-                self.ui.deeplKey.setText(self.setting.downLoad)
             if self.setting.consumer_key == "None" or self.setting.consumer_secret == "None" or self.setting.access_token == "None" or self.setting.access_token_secret == "None" or self.setting.bearer_token == "None":
                 self.Form.show()
             link = self.linkBar.text()
@@ -502,7 +502,7 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
             self.showImage()
             self.linkBar.clear()
         except:
-            print("Not downloadable")
+            logger.exception("Not Downloadable")
 
 
 

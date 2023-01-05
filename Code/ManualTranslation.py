@@ -205,14 +205,14 @@ class ManualTranslation(QRunnable):
     @logger.catch
     def run(self):
         if self.retrans:
-            pprint(self.manualRect)
+            # pprint(self.manualRect)
             if self.source == None and self.manualRect != {}:
                 for x in list(self.manualRect.values()):
                     if x != []:
                         self.source = langid.classify(x[0])[0]
                         break
             translated = self.translate(self.manualRect, self.translator, self.source)
-            pprint(translated)
+            # pprint(translated)
             self.signals.result.emit(translated)
             self.signals.finished.emit()
         else:
@@ -220,20 +220,20 @@ class ManualTranslation(QRunnable):
             self.cnt += self.portions
             self.signals.progress.emit(self.cnt)
 
-            pprint(self.dictionary)
-            pprint(cropText)
+            # pprint(self.dictionary)
+            # pprint(cropText)
             japanese = self.get_text(self.mocr, cropText)
             self.cnt += self.portions
             self.signals.progress.emit(self.cnt)
 
-            pprint(japanese)
+            # pprint(japanese)
             if self.source == None and japanese != {}:
                 for x in list(japanese.values()):
                     if x != []:
                         self.source = langid.classify(x[0])[0]
                         break
             translated = self.translate(japanese, self.translator, self.source)
-            pprint(translated)
+            # pprint(translated)
             self.cnt += self.portions
             self.signals.progress.emit(self.cnt)
             self.handling.deleteFiles(self.setting.cropText)

@@ -537,6 +537,10 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
             self.isClicked = False
             self.index = 0
             self.changeTranslation.clear()
+            self.im.pages.clear()
+            self.im.connectDict.clear()
+            self.im.translated.clear()
+            self.im.japanese.clear()
         if self.setting.downLoad == "":
             directory = QFileDialog.getExistingDirectory(self, 'Select a directory')
             self.setting.updateSetting("Paths", "Download", directory)

@@ -375,9 +375,30 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
     
     def sortFile(self, n):
         if n and self.files != []:
-            self.files.sort()
+            self.fileSorting()
             self.showImage()
         self.isSort = True
+
+    def fileSorting(self):
+        nd = {}
+        conn = {}
+        sortedFiles = []
+        temp = []
+        for file in self.files:
+            sp = file.split("/")
+            nd[sp[-1].split(".")[0]] = file
+        # pprint(nd)
+        for n in nd.keys():
+            if n.isdigit():
+                temp.append(int(n))
+                conn[int(n)] = n
+            else:
+                temp.append(n)
+        temp.sort()
+        for x in temp:
+            sortedFiles.append(nd[conn[x]])
+        self.files = sortedFiles
+
     
     def removeRectangle(self, n):
         if n:
@@ -566,7 +587,7 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
             if self.files != []:
                 self.im.img = self.files[0]
                 if self.isSort:
-                    self.files.sort()
+                    self.fileSorting()
                 self.showImage()
             if self.isClicked == False:
                 self.translatedFiles.clear()
@@ -730,7 +751,7 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
             pass
         elif self.im.flag and self.im.connectDict == {} and self.im.translated == {}:
             logger.info("Manual Translation")
-            print(self.im.pages)
+            # print(self.im.pages)
             self.worker = ManualTranslation(self.im.pages, self.ocr, self.translator, self.im.width(), self.im.height())
             self.worker.signals.result.connect(self.manualAfterThread)
             self.worker.signals.finished.connect(self.hideProgress)

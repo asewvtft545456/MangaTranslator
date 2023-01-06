@@ -330,6 +330,7 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
                 temp.append(int(n))
                 conn[int(n)] = n
             else:
+                conn[n] = n
                 temp.append(n)
         temp.sort()
         for x in temp:

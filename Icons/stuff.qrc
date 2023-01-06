@@ -1,5 +1,12 @@
 <RCC>
   <qresource prefix="newPrefix">
+    <file>menu (1).png</file>
+    <file>arrow.png</file>
+    <file>arrow1.png</file>
+    <file>downArrow.png</file>
+    <file>download.png</file>
+    <file>manga.png</file>
+    <file>settings.png</file>
     <file>twitter.png</file>
     <file>marker.png</file>
     <file>eraser.png</file>

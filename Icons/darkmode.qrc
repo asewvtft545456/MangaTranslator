@@ -1,0 +1,13 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>menu (1).png</file>
+    <file>forward.png</file>
+    <file>forward1.png</file>
+    <file>colordownload.png</file>
+    <file>play.png</file>
+    <file>play1.png</file>
+    <file>gear.png</file>
+    <file>eraser.png</file>
+    <file>twitter.png</file>
+  </qresource>
+</RCC>

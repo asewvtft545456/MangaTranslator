@@ -3,9 +3,9 @@ from PyQt5.QtWidgets import QFileDialog, QShortcut
 from PyQt5.QtGui import QPixmap
 import sys
 from PyQt5 import QtWidgets
-from mainApp import Ui_MainWindow
+from darkmode import Ui_MainWindow
 from Canvas import Image
-from PyQt5.QtCore import QThreadPool, pyqtSignal, Qt, QPoint, QRect, QRectF, QEventLoop
+from PyQt5.QtCore import QThreadPool, pyqtSignal, Qt, QPoint, QPropertyAnimation, QEventLoop
 from TranslateManga import Translate
 from DownloadTweet import Twitter
 from Retranslate import Retranslate
@@ -42,7 +42,6 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
         self.files = []
         self.isClicked = False
         self.shownSetting = False
-        self.setButton.setCheckable(True)
         self.bar.setValue(0)
         self.bar.setFormat("Translating....")
         self.bar.setGeometry(self.width()//2-65, self.height()//2, 200, 30)
@@ -70,25 +69,15 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
         self.num = -1
         self.isSort = False
         self.widget_2.hide()
+        self.AutoWidget.hide()
+        self.ManualWidget.hide()
         self.advanceSettings1()
+        self.side_menu.hide()
 
     
     def appMod(self):
-        self.settings.hide()
         self.setWindowTitle("MangaTranslator")
         self.setWindowIcon(QtGui.QIcon("Icons\\translation.png"))
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap("Icons\\arrow.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
-        self.leftArrow.setIcon(icon1)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("Icons\\settings.png"),QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
-        self.setButton.setIcon(icon)
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap("Icons\\arrow1.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
-        self.rightArrow.setIcon(icon2)
-        icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap("Icons\\download.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
-        self.pushButton.setIcon(icon3)
         self.translateOptions.addItem('Youdao')
         self.translateOptions.addItem('MyMemory')
         self.bGcolor.addItem("None")
@@ -101,27 +90,24 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
         self.im.setScaledContents(True)
         self.on1 = False
         self.on2 = False
+        self.on3 = False
         QShortcut(QtCore.Qt.Key_Right, self, self.moveRight)
         QShortcut(QtCore.Qt.Key_Left, self, self.moveLeft)
     
     def widgetSizes(self):
         self.imageWidget.setMaximumSize(QtCore.QSize(900,800))
-        self.settings.setMaximumSize(QtCore.QSize(290, 11111))
-        self.settings.setMinimumSize(QtCore.QSize(290, 340))
         self.translate.setMinimumSize(QtCore.QSize(130, 40))
         self.upload.setMinimumSize(QtCore.QSize(130, 40))
         self.saveButton.setMinimumSize(QtCore.QSize(130, 40))
-        self.editRect.setMinimumSize(QtCore.QSize(400, 70))
-        self.undoButton.setMinimumSize(QtCore.QSize(100, 50))
-        self.redoButton.setMinimumSize(QtCore.QSize(100, 50))
-        self.eraseButton.setMinimumSize(QtCore.QSize(100, 50))
-        self.undoButton.setIconSize(QtCore.QSize(30, 30))
-        self.redoButton.setIconSize(QtCore.QSize(30, 30))
-        self.eraseButton.setIconSize(QtCore.QSize(30, 30))
-        self.widget.setMinimumSize(QtCore.QSize(100, 250))
-        self.widget.setMaximumSize(QtCore.QSize(100, 250))
+        self.editRect.setMinimumSize(QtCore.QSize(250, 45))
         self.ui.saveSet.setMinimumSize(QtCore.QSize(100, 30))
         self.ui.label_4.setText("Twitter")
+        self.header.setMinimumSize(QtCore.QSize(0, 100))
+        self.header.setMaximumSize(QtCore.QSize(16777215, 100))
+        self.pushButton_5.setIconSize(QtCore.QSize(60, 60))
+        self.pushButton_2.setIconSize(QtCore.QSize(60, 60))
+        self.menu.setIconSize(QtCore.QSize(30, 30))
+        self.side_menu.setMaximumWidth(250)
         
 
     def buttonConnections(self):
@@ -130,9 +116,8 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
         self.leftArrow.clicked.connect(self.moveLeft)
         self.translate.clicked.connect(self.translate1)
         self.translate.clicked.connect(self.showProgress)
-        self.setButton.clicked.connect(self.showSet)
-        self.setButton.clicked.connect(self.showSettings)
-        self.pushButton.clicked.connect(self.linkUpload)
+        self.pushButton_5.clicked.connect(self.showSet)
+        self.pushButton_6.clicked.connect(self.linkUpload)
         self.advanced.clicked.connect(self.advanceSettings)
         self.ui.saveSet.clicked.connect(self.getInfo)
         self.translateOptions.currentTextChanged.connect(self.choosenTranslator)
@@ -144,7 +129,7 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
         self.combineOverLap.stateChanged.connect(self.showCombO)
         self.singlePtranslate.stateChanged.connect(self.getCurr)
         self.saveButton.clicked.connect(self.saveImages)
-        self.horizontalLayout.addWidget(self.im)
+        self.horizontalLayout_5.addWidget(self.im)
         self.manualButton.clicked.connect(self.changeToManual)
         self.automaticButton.clicked.connect(self.changeToAutomatic)
         self.sortButton.stateChanged.connect(self.sortFile)
@@ -153,6 +138,7 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
         self.undoButton.clicked.connect(self.undo)
         self.redoButton.clicked.connect(self.redo)
         self.eraseButton.clicked.connect(self.startErase)
+        self.menu.clicked.connect(self.showMenu)
         
 
     def stylesheet1(self):
@@ -168,50 +154,6 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
                           "background-color: #05B8CC;\n"
                           "border-radius:15px;\n"
                           "}\n")
-        self.automaticButton.setStyleSheet("QPushButton{\n"
-                            "height:50;\n"
-                            "width: 50;\n"
-                            "border-radius: 15px;\n"
-                            "background-color: QLinearGradient( x1: 0, y1: 0,\n"
-                            "                             x2: 1, y2: 0, \n"
-                            "                          stop: 0 #fa71cd, \n"
-                            "                          stop: 1 #c471f5);\n"
-                            "}\n"
-                            "QPushButton:hover:!pressed\n"
-                            "{\n"
-                            "background-color: QLinearGradient( x1: 0, y1: 0,\n"
-                            "                             x2: 1, y2: 0, \n"
-                            "                          stop: 0 #fa71cd, \n"
-                            "                          stop: 1 #c471f5);\n"
-                            "}")
-        self.manualButton.setStyleSheet("QPushButton{\n"
-                            "height:50;\n"
-                            "width: 50;\n"
-                            "border-radius: 15px;\n"
-                            "background-color: rgb(82, 82, 82);\n"
-                            "color: rgb(255, 255, 255);\n"
-                            "}\n"
-                            "QPushButton:hover:!pressed\n"
-                            "{\n"
-                            "background-color: QLinearGradient( x1: 0, y1: 0,\n"
-                            "                             x2: 1, y2: 0, \n"
-                            "                          stop: 0 #fa71cd, \n"
-                            "                          stop: 1 #c471f5);\n"
-                            "}")
-        self.advanced.setStyleSheet("QPushButton{\n"
-                            "height:30;\n"
-                            "width: 111;\n"
-                            "border-radius: 5px;\n"
-                            "background-color: rgb(82, 82, 82);\n"
-                            "color: rgb(255, 255, 255);\n"
-                            "}\n"
-                            "QPushButton:hover:!pressed\n"
-                            "{\n"
-                            "background-color: QLinearGradient( x1: 0, y1: 0,\n"
-                            "                             x2: 1, y2: 0, \n"
-                            "                          stop: 0 #fa71cd, \n"
-                            "                          stop: 1 #c471f5);\n"
-                            "}")
         
         
 
@@ -221,92 +163,32 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
         self.AutoWidget.hide()
         self.ManualWidget.show()
         self.editRect.show()
-        self.settings.show()
         self.widget_2.hide()
-        self.manualButton.setStyleSheet("QPushButton{\n"
-                        "height:50;\n"
-                        "width: 50;\n"
-                        "border-radius: 15px;\n"
-                        "background-color: QLinearGradient( x1: 0, y1: 0,\n"
-                        "                             x2: 1, y2: 0, \n"
-                        "                          stop: 0 #fa71cd, \n"
-                        "                          stop: 1 #c471f5);\n"
-                        "}\n"
-                        "QPushButton:hover:!pressed\n"
-                        "{\n"
-                        "background-color: QLinearGradient( x1: 0, y1: 0,\n"
-                        "                             x2: 1, y2: 0, \n"
-                        "                          stop: 0 #fa71cd, \n"
-                        "                          stop: 1 #c471f5);\n"
-                        "}")
-        self.automaticButton.setStyleSheet("QPushButton{\n"
-                        "height:50;\n"
-                        "width: 50;\n"
-                        "border-radius: 15px;\n"
-                        "background-color: rgb(82, 82, 82);\n"
-                        "color: rgb(255, 255, 255);\n"
-                        "}\n"
-                        "QPushButton:hover:!pressed\n"
-                        "{\n"
-                        "background-color: QLinearGradient( x1: 0, y1: 0,\n"
-                        "                             x2: 1, y2: 0, \n"
-                        "                          stop: 0 #fa71cd, \n"
-                        "                          stop: 1 #c471f5);\n"
-                        "}")
         if self.on1:
-            self.settings.hide()
+            self.ManualWidget.hide()
             self.on1= False
         else:
             self.on1 = True
             self.on2 = False
-            self.shownSetting = False
+            self.on3 = False
+
+    
 
     def changeToAutomatic(self):
         self.im.flag = False
         self.ManualWidget.hide()
         self.AutoWidget.show()
         self.editRect.hide()
-        self.settings.show()
         self.widget_2.hide()
-        self.automaticButton.setStyleSheet("QPushButton{\n"
-                                "height:50;\n"
-                                "width: 50;\n"
-                                "border-radius: 15px;\n"
-                                "background-color: QLinearGradient( x1: 0, y1: 0,\n"
-                                "                             x2: 1, y2: 0, \n"
-                                "                          stop: 0 #fa71cd, \n"
-                                "                          stop: 1 #c471f5);\n"
-                                "}\n"
-                                "QPushButton:hover:!pressed\n"
-                                "{\n"
-                                "background-color: QLinearGradient( x1: 0, y1: 0,\n"
-                                "                             x2: 1, y2: 0, \n"
-                                "                          stop: 0 #fa71cd, \n"
-                                "                          stop: 1 #c471f5);\n"
-                                "}")
-        self.manualButton.setStyleSheet("QPushButton{\n"
-                                "height:50;\n"
-                                "width: 50;\n"
-                                "border-radius: 15px;\n"
-                                "background-color: rgb(82, 82, 82);\n"
-                                "color: rgb(255, 255, 255);\n"
-                                "}\n"
-                                "QPushButton:hover:!pressed\n"
-                                "{\n"
-                                "background-color: QLinearGradient( x1: 0, y1: 0,\n"
-                                "                             x2: 1, y2: 0, \n"
-                                "                          stop: 0 #fa71cd, \n"
-                                "                          stop: 1 #c471f5);\n"
-                                "}")
-        if self.translatedFiles != []:
-            self.showImage()
         if self.on2:
-            self.settings.hide()
+            self.AutoWidget.hide()
             self.on2= False
         else:
             self.on2 = True
             self.on1 = False
-            self.shownSetting = False
+            self.on3 = False
+        if self.translatedFiles != []:
+            self.showImage()
 
     def advanceSettings1(self):
         self.ui.translatePath.setText(str(self.setting.Translated))
@@ -413,19 +295,24 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
         self.checkthing = n
     
     def showSet(self):
-        self.settings.show()
         self.widget_2.show()
         self.AutoWidget.hide()
         self.ManualWidget.hide()
+        if self.on3:
+            self.widget_2.hide()
+            self.on3 = False
+        else:
+            self.on3 = True
+            self.on2 = False
+            self.on1 = False
 
-    def showSettings(self):
+    def showMenu(self):
+        self.side_menu.show()
         if self.shownSetting:
-            self.settings.hide()
+            self.side_menu.hide()
             self.shownSetting= False
         else:
             self.shownSetting = True
-            self.on1 = False
-            self.on2 = False
 
     def showSearch(self):
         self.searchwidget.show()

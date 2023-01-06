@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="newPrefix">
+    <file>down-chevron.png</file>
     <file>menu (1).png</file>
     <file>forward.png</file>
     <file>forward1.png</file>

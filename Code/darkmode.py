@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(613, 672)
+        MainWindow.resize(613, 616)
         MainWindow.setStyleSheet("")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setStyleSheet("*{\n"
@@ -237,6 +237,7 @@ class Ui_MainWindow(object):
         self.Textcolor.setFont(font)
         self.Textcolor.setStyleSheet("QComboBox{\n"
 "border-color: rgb(85, 170, 255);\n"
+"border-radius: 5px;\n"
 "}\n"
 "QComboBox::on{\n"
 "border: 2px solid #c2dbfe;\n"
@@ -253,7 +254,8 @@ class Ui_MainWindow(object):
 "{\n"
 "    \n"
 "    \n"
-"    image: url(:/newPrefix/downArrow.png);\n"
+"    \n"
+"    image: url(:/newPrefix/down-chevron.png);\n"
 "    width: 10px;\n"
 "    height: 10px;\n"
 "}")
@@ -292,7 +294,8 @@ class Ui_MainWindow(object):
 "{\n"
 "    \n"
 "    \n"
-"    image: url(:/newPrefix/downArrow.png);\n"
+"    \n"
+"    image: url(:/newPrefix/down-chevron.png);\n"
 "    width: 10px;\n"
 "    height: 10px;\n"
 "}")
@@ -375,7 +378,8 @@ class Ui_MainWindow(object):
 "{\n"
 "    \n"
 "    \n"
-"    image: url(:/newPrefix/downArrow.png);\n"
+"    \n"
+"    image: url(:/newPrefix/down-chevron.png);\n"
 "    width: 10px;\n"
 "    height: 10px;\n"
 "}\n"

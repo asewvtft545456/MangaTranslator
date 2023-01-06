@@ -187,7 +187,7 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
             self.on2 = True
             self.on1 = False
             self.on3 = False
-        if self.translatedFiles != []:
+        if self.files != []:
             self.showImage()
 
     def advanceSettings1(self):
@@ -569,18 +569,17 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
 
     @logger.catch
     def showImage(self):
-        if self.isClicked:
-            if not self.im.flag:
-                self.saveButton.show()
-                im = self.translatedFiles[self.newIndex]
-                pix = QPixmap(im)
-                self.im.setPixmap(pix)
-            else:
-                self.drawOnPages()
-                im = self.files[self.index]
-                pix = QPixmap(im)
-                self.im.image = pix
-                self.saveButton.show()
+        if self.isClicked and not self.im.flag and self.translatedFiles != []:
+            self.saveButton.show()
+            im = self.translatedFiles[self.newIndex]
+            pix = QPixmap(im)
+            self.im.setPixmap(pix)
+        elif self.isClicked and self.im.flag:
+            self.drawOnPages()
+            im = self.files[self.index]
+            pix = QPixmap(im)
+            self.im.image = pix
+            self.saveButton.show()
         else:
             pix = QPixmap(self.files[self.index])
             self.im.image = pix

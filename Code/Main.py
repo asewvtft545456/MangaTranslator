@@ -171,6 +171,33 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
             self.on1 = True
             self.on2 = False
             self.on3 = False
+        self.automaticButton.setStyleSheet("QPushButton:\n"
+                                        "{\n"
+                                        "background-color: QLinearGradient( x1: 0, y1: 0,\n"
+                                        "                             x2: 1, y2: 0, \n"
+                                        "                          stop: 0 #c471f5, \n"
+                                        "                          stop: 1 #fa71cd );\n"
+                                        "}"
+                                        "QPushButton:hover:!pressed\n"
+                                        "{\n"
+                                        "background-color: QLinearGradient( x1: 0, y1: 0,\n"
+                                        "                             x2: 1, y2: 0, \n"
+                                        "                          stop: 0 #c471f5, \n"
+                                        "                          stop: 1 #fa71cd );\n"
+                                        "}")
+        self.manualButton.setStyleSheet("QPushButton{\n"
+                                     "background-color: QLinearGradient( x1: 0, y1: 0,\n"
+                                        "                             x2: 1, y2: 0, \n"
+                                        "                          stop: 0 #c471f5, \n"
+                                        "                          stop: 1 #fa71cd );\n"
+                                     "}\n"
+                                     "QPushButton:hover:!pressed\n"
+                                     "{\n"
+                                     "background-color: QLinearGradient( x1: 0, y1: 0,\n"
+                                     "                             x2: 1, y2: 0, \n"
+                                     "                          stop: 0 #c471f5, \n"
+                                     "                          stop: 1 #fa71cd );\n"
+                                     "}")
 
     
 
@@ -187,6 +214,34 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
             self.on2 = True
             self.on1 = False
             self.on3 = False
+        self.manualButton.setStyleSheet("QPushButton:\n"
+                                        "{\n"
+                                        "background-color: QLinearGradient( x1: 0, y1: 0,\n"
+                                        "                             x2: 1, y2: 0, \n"
+                                        "                          stop: 0 #c471f5, \n"
+                                        "                          stop: 1 #fa71cd );\n"
+                                        "}"
+                                        "QPushButton:hover:!pressed\n"
+                                        "{\n"
+                                        "background-color: QLinearGradient( x1: 0, y1: 0,\n"
+                                        "                             x2: 1, y2: 0, \n"
+                                        "                          stop: 0 #c471f5, \n"
+                                        "                          stop: 1 #fa71cd );\n"
+                                        "}")
+        self.automaticButton.setStyleSheet("QPushButton{\n"
+                                            "background-color: QLinearGradient( x1: 0, y1: 0,\n"
+                                        "                             x2: 1, y2: 0, \n"
+                                        "                          stop: 0 #c471f5, \n"
+                                        "                          stop: 1 #fa71cd );\n"
+                                            "}\n"
+                                            "QPushButton:hover:!pressed\n"
+                                            "{\n"
+                                            "background-color: QLinearGradient( x1: 0, y1: 0,\n"
+                                            "                             x2: 1, y2: 0, \n"
+                                            "                          stop: 0 #c471f5, \n"
+                                            "                          stop: 1 #fa71cd );\n"
+                                            "}")
+
         if self.files != []:
             self.showImage()
 

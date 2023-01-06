@@ -157,6 +157,13 @@ class Ui_MainWindow(object):
         font.setFamily("Comic Sans MS")
         font.setPointSize(10)
         self.automaticButton.setFont(font)
+        self.automaticButton.setStyleSheet("QPushButton:hover:!pressed\n"
+"{\n"
+"background-color: QLinearGradient( x1: 0, y1: 0,\n"
+"                             x2: 1, y2: 0, \n"
+"                          stop: 0 #c471f5, \n"
+"                          stop: 1 #fa71cd );\n"
+"}")
         self.automaticButton.setObjectName("automaticButton")
         self.verticalLayout_2.addWidget(self.automaticButton)
         self.AutoWidget = QtWidgets.QWidget(self.side_menu)
@@ -214,6 +221,13 @@ class Ui_MainWindow(object):
         font.setFamily("Comic Sans MS")
         font.setPointSize(10)
         self.manualButton.setFont(font)
+        self.manualButton.setStyleSheet("QPushButton:hover:!pressed\n"
+"{\n"
+"background-color: QLinearGradient( x1: 0, y1: 0,\n"
+"                             x2: 1, y2: 0, \n"
+"                          stop: 0 #c471f5, \n"
+"                          stop: 1 #fa71cd );\n"
+"}")
         self.manualButton.setObjectName("manualButton")
         self.verticalLayout_2.addWidget(self.manualButton)
         self.ManualWidget = QtWidgets.QWidget(self.side_menu)
@@ -328,6 +342,13 @@ class Ui_MainWindow(object):
         self.verticalLayout_7.addLayout(self.manualSet)
         self.verticalLayout_2.addWidget(self.ManualWidget)
         self.pushButton_5 = QtWidgets.QPushButton(self.side_menu)
+        self.pushButton_5.setStyleSheet("QPushButton:hover:!pressed\n"
+"{\n"
+"background-color: QLinearGradient( x1: 0, y1: 0,\n"
+"                             x2: 1, y2: 0, \n"
+"                          stop: 0 #c471f5, \n"
+"                          stop: 1 #fa71cd );\n"
+"}")
         self.pushButton_5.setText("")
         icon2 = QtGui.QIcon()
         icon2.addPixmap(QtGui.QPixmap(":/newPrefix/gear.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -412,6 +433,13 @@ class Ui_MainWindow(object):
         self.verticalLayout_10.addLayout(self.verticalLayout_9)
         self.verticalLayout_2.addWidget(self.widget_2)
         self.pushButton_2 = QtWidgets.QPushButton(self.side_menu)
+        self.pushButton_2.setStyleSheet("QPushButton:hover:!pressed\n"
+"{\n"
+"background-color: QLinearGradient( x1: 0, y1: 0,\n"
+"                             x2: 1, y2: 0, \n"
+"                          stop: 0 #c471f5, \n"
+"                          stop: 1 #fa71cd );\n"
+"}")
         self.pushButton_2.setText("")
         icon3 = QtGui.QIcon()
         icon3.addPixmap(QtGui.QPixmap(":/newPrefix/twitter.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)

@@ -86,7 +86,6 @@ class Ui_MainWindow(object):
         self.linkBar = QtWidgets.QLineEdit(self.searchwidget)
         self.linkBar.setMaximumSize(QtCore.QSize(400, 36))
         font = QtGui.QFont()
-        font.setPointSize(-1)
         self.linkBar.setFont(font)
         self.linkBar.setStyleSheet("background-color: rgb(0, 0, 0);\n"
 "border: 2px solid rgb(255, 255, 255);\n"

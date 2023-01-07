@@ -616,12 +616,11 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def drawOnPages(self):
         if self.im.flag and self.files != []:
+            for img in self.files:
+                if img not in self.im.pages:
+                    self.im.pages[img] = []
             currentP = self.files[self.index]
-            if currentP not in self.im.pages:
-                self.im.img = currentP
-                self.im.pages[currentP] = []
-            else:
-                self.im.img = currentP
+            self.im.img = currentP
 
     @logger.catch
     def showImage(self):

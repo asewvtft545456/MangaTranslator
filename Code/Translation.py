@@ -8,7 +8,10 @@ import os
 import easyocr
 from PIL import Image
 from addText import add_text_to_image
-import translators.server as ts
+try:
+    import translators.server as ts
+except ModuleNotFoundError:
+    import translators as ts
 
 class MangaBag:
 

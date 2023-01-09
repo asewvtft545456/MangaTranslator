@@ -6,12 +6,15 @@ import cv2
 from pprint import pprint
 from deep_translator import MyMemoryTranslator
 import deepl
-import translators.server as ts
 import langid
 from FileHandling import FileHandler
 from Configer import Settings
 from loguru import logger
 from PIL import Image
+try:
+    import translators.server as ts
+except ModuleNotFoundError:
+    import translators as ts
 
 class Worker(QObject):
     result = pyqtSignal(object)

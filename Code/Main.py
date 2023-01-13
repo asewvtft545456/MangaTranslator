@@ -11,8 +11,8 @@ from DownloadTweet import Twitter
 from Retranslate import Retranslate
 from PIL import ImageQt
 import img2pdf
-from Configer import Settings
 from FileHandling import FileHandler
+from Configer import Settings
 from settingsGUI import Ui_Form
 from manga_ocr import MangaOcr
 from IndividualPage import SingleTranslate

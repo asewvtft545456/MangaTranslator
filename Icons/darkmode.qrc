@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="newPrefix">
+    <file>whiteBG.jpg</file>
+    <file>translation.png</file>
     <file>down-chevron.png</file>
     <file>menu (1).png</file>
     <file>forward.png</file>

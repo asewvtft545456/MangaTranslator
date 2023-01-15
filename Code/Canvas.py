@@ -8,9 +8,9 @@ class Image(QtWidgets.QLabel):
 
     def __init__(self, parent):
         super(Image, self).__init__(parent=parent)
-        self.setPixmap(QtGui.QPixmap("Icons\pure-white-background-85a2a7fd.jpg"))
+        self.setPixmap(QtGui.QPixmap(":/newPrefix/whiteBG.jpg"))
         self.img = None
-        self.image = QPixmap("Icons\pure-white-background-85a2a7fd.jpg")
+        self.image = QPixmap(":/newPrefix/whiteBG.jpg")
         self.begin = QPoint()
         self.end = QPoint()
         self.flag = False
@@ -102,7 +102,7 @@ class Image(QtWidgets.QLabel):
             super().mouseReleaseEvent(event)
     
     def changeCursor(self):
-        cursor = QPixmap("Icons\eraser.png")
+        cursor = QPixmap(":/newPrefix/eraser.png")
         cursorScaled = cursor.scaled(QtCore.QSize(35, 35), Qt.KeepAspectRatio)
         currCursor = QCursor(cursorScaled, -1, -1)
         self.setCursor(currCursor)

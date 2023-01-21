@@ -22,14 +22,14 @@ class Worker(QObject):
     progress = pyqtSignal(int)
 
 class ManualTranslation(QRunnable):
-    def __init__(self, dictionary, mocr, translator, width, height, retranslate=False):
+    def __init__(self, dictionary, mocr, translator, language, width, height, retranslate=False):
         super(ManualTranslation, self).__init__()
         self.manualRect = dictionary
         self.mocr = mocr
         self.translator = translator
         self.width = width
         self.height = height
-        self.source = None
+        self.source = None if language == "auto" else language
         self.dictionary = {}
         self.signals = Worker()
         self.portions = (100)/3
@@ -63,8 +63,6 @@ class ManualTranslation(QRunnable):
             scaleDict[index] = (x, y, xmax, ymax)
         return scaleDict
         
-    
-    @logger.catch
     def crop(self, formatted):
         formattedDict = formatted.copy()
         newDict = {}
@@ -121,78 +119,65 @@ class ManualTranslation(QRunnable):
             dict1[x] = list1
         return dict1
 
-    @logger.catch
+    
     def translate(self, original, name, langauge):
         newDict = {}
         if original == {}:
             return {}
         source = langauge
         # print(source)
-        try:
-            if name == "DeepL":
-                for key in original:
-                    h = []
-                    for jap in original[key]:
-                        t = deepl.translate(source_language=source.upper(), target_language="EN", text=jap)
-                        h.append(t)
-                    newDict[key] = h
-                    if self.retrans:
-                        self.cnt += self.portions
-                        self.signals.progress.emit(self.cnt)
-            elif name == "MyMemory":
-                for key in original:
-                    h = []
-                    for jap in original[key]:
-                        t = MyMemoryTranslator(source=source, target='en').translate(jap)
-                        h.append(t)
-                    newDict[key] = h
-                    if self.retrans:
-                        self.cnt += self.portions
-                        self.signals.progress.emit(self.cnt)
-            elif name == "Google":
-                for key in original:
-                    h = []
-                    for jap in original[key]:
-                        t = str(ts.google(jap))
-                        h.append(t)
-                    newDict[key] = h
-                    if self.retrans:
-                        self.cnt += self.portions
-                        self.signals.progress.emit(self.cnt)
-            elif name == "Bing":
-                for key in original:
-                    h = []
-                    for jap in original[key]:
-                        t = str(ts.bing(jap))
-                        h.append(t)
-                    newDict[key] = h
-                    if self.retrans:
-                        self.cnt += self.portions
-                        self.signals.progress.emit(self.cnt)
-            elif name == "Youdao":
-                for key in original:
-                    h = []
-                    for jap in original[key]:
-                        t = str(ts.youdao(jap))
-                        h.append(t)
-                    newDict[key] = h
-                    if self.retrans:
-                        self.cnt += self.portions
-                        self.signals.progress.emit(self.cnt)
-        except:
-                logger.exception("Failed translation!")         
-                for key in original:
-                    h = []
-                    for jap in original[key]:
-                        t = str(ts.bing(jap))
-                        h.append(t)
-                    newDict[key] = h
-                    if self.retrans:
-                        self.cnt += self.portions
-                        self.signals.progress.emit(self.cnt)
+        if name == "DeepL":
+            for key in original:
+                h = []
+                for jap in original[key]:
+                    t = deepl.translate(source_language="JA", target_language="EN", text=jap)
+                    h.append(t)
+                newDict[key] = h
+                if self.retrans:
+                    self.cnt += self.portions
+                    self.signals.progress.emit(self.cnt)
+        elif name == "MyMemory":
+            for key in original:
+                h = []
+                for jap in original[key]:
+                    t = MyMemoryTranslator(source="ja", target='en').translate(jap)
+                    h.append(t)
+                newDict[key] = h
+                if self.retrans:
+                    self.cnt += self.portions
+                    self.signals.progress.emit(self.cnt)
+        elif name == "Google":
+            for key in original:
+                h = []
+                for jap in original[key]:
+                    t = str(ts.google(jap))
+                    h.append(t)
+                newDict[key] = h
+                if self.retrans:
+                    self.cnt += self.portions
+                    self.signals.progress.emit(self.cnt)
+        elif name == "Bing":
+            for key in original:
+                h = []
+                for jap in original[key]:
+                    t = str(ts.bing(jap))
+                    h.append(t)
+                newDict[key] = h
+                if self.retrans:
+                    self.cnt += self.portions
+                    self.signals.progress.emit(self.cnt)
+        elif name == "Youdao":
+            for key in original:
+                h = []
+                for jap in original[key]:
+                    t = str(ts.youdao(jap))
+                    h.append(t)
+                newDict[key] = h
+                if self.retrans:
+                    self.cnt += self.portions
+                    self.signals.progress.emit(self.cnt)
         return newDict
     
-    @logger.catch
     def formatDict(self):
         num = 0
         listDict = {}
@@ -219,26 +204,30 @@ class ManualTranslation(QRunnable):
             self.signals.result.emit(translated)
             self.signals.finished.emit()
         else:
-            cropText = self.crop(self.manualRect)
-            self.cnt += self.portions
-            self.signals.progress.emit(self.cnt)
+            try:
+                cropText = self.crop(self.manualRect)
+                self.cnt += self.portions
+                self.signals.progress.emit(self.cnt)
 
-            # pprint(self.dictionary)
-            # pprint(cropText)
-            japanese = self.get_text(self.mocr, cropText)
-            self.cnt += self.portions
-            self.signals.progress.emit(self.cnt)
+                # pprint(self.dictionary)
+                # pprint(cropText)
+                japanese = self.get_text(self.mocr, cropText)
+                self.cnt += self.portions
+                self.signals.progress.emit(self.cnt)
 
-            # pprint(japanese)
-            if self.source == None and japanese != {}:
-                for x in list(japanese.values()):
-                    if x != []:
-                        self.source = langid.classify(x[0])[0]
-                        break
-            translated = self.translate(japanese, self.translator, self.source)
-            # pprint(translated)
-            self.cnt += self.portions
-            self.signals.progress.emit(self.cnt)
-            self.handling.deleteFiles(self.setting.cropText)
-            self.signals.result.emit((self.dictionary, translated, japanese, self.scaleDict))
-            self.signals.finished.emit()
+                # pprint(japanese)
+                if self.source == None and japanese != {}:
+                    for x in list(japanese.values()):
+                        if x != []:
+                            self.source = langid.classify(x[0])[0]
+                            break
+                translated = self.translate(japanese, self.translator, self.source)
+            except:
+                self.signals.result.emit("ERROR")
+                self.signals.finished.emit()
+            else:
+                self.cnt += self.portions
+                self.signals.progress.emit(self.cnt)
+                self.handling.deleteFiles(self.setting.cropText)
+                self.signals.result.emit((self.dictionary, translated, japanese, self.scaleDict))
+                self.signals.finished.emit()

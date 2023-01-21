@@ -65,6 +65,3 @@ class Settings:
         self.access_token = self.config.get("Twitter", "Access token", raw=True)
         self.access_token_secret = self.config.get("Twitter", "Access token secret", raw=True)
         self.bearer_token = self.config.get("Twitter", "Bearer token", raw=True)
-        
-
-Settings()

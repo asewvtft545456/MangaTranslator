@@ -48,7 +48,8 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
         self.bar.setVisible(False)
         self.bar.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.fontsize.setMaximum(15)
-        self.translator = "Bing"
+        self.translator = "DeepL"
+        self.translateOptions.setCurrentIndex(2)
         self.range = 0
         self.combineN = False
         self.rangeSlider.setEnabled(False)
@@ -73,6 +74,13 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ManualWidget.hide()
         self.advanceSettings1()
         self.side_menu.hide()
+        self.ISPCode = {
+            "Japanese": "ja",
+            "Korean": "ko",
+            "Chinese": "zh",
+            "Auto detect": "auto"
+        }
+        self.originalLang =  "ja"
 
     
     def appMod(self):
@@ -107,7 +115,7 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton_5.setIconSize(QtCore.QSize(60, 60))
         self.pushButton_2.setIconSize(QtCore.QSize(60, 60))
         self.menu.setIconSize(QtCore.QSize(30, 30))
-        self.side_menu.setMaximumWidth(250)
+        self.side_menu.setMinimumWidth(255)
         
 
     def buttonConnections(self):
@@ -139,21 +147,27 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
         self.redoButton.clicked.connect(self.redo)
         self.eraseButton.clicked.connect(self.startErase)
         self.menu.clicked.connect(self.showMenu)
+        self.languages.currentTextChanged.connect(self.langOption)
         
 
     def stylesheet1(self):
-        self.bar.setStyleSheet("QProgressBar\n"
-                          "{\n"
-                          "border: solid grey;\n"
-                          "border-radius: 15px;\n"
-                          "background-color: white;\n"
-                          "color:black;\n"
-                          "}\n"
-                          "QProgressBar::chunk"
-                          "{\n"
-                          "background-color: #05B8CC;\n"
-                          "border-radius:15px;\n"
-                          "}\n")
+        self.bar.setStyleSheet(
+                          """ QProgressBar {
+                                border: 2px solid #3F51B5;
+                                border-radius: 5px;
+                                text-align: center;
+                                font-weight: bold;
+                            }
+
+                            QProgressBar::chunk {
+                                background-color: #3F51B5;
+                                width: 10px;
+                                margin: 0.5px;
+                                border-radius:1px;
+                            }""")
+        font = QFont()
+        font.setFamily("Comic Sans MS")
+        self.bar.setFont(font)
         
         
 
@@ -345,10 +359,12 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
             self.im.rect = True
 
     def changeTrans(self, n):
-        self.changeTranslation = n
+        if n != None or n != []:
+            self.changeTranslation = n
 
     def changeCheckThing(self, n):
-        self.checkthing = n
+        if n != None or n != []:
+            self.checkthing = n
     
     def showSet(self):
         self.widget_2.show()
@@ -415,6 +431,9 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
     
     def orgLang(self, i):
         self.orgLanguage = i
+
+    def langOption(self, i):
+        self.originalLang = self.ISPCode[i]
 
     def textColors(self, i):
         self.im.textColor = i
@@ -649,28 +668,31 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
             self.drawOnPages()
 
     def afterThread(self, translated):
-        self.isClicked = True
-        self.translatedFiles = translated
-        self.index = 0
-        self.newIndex = 0
-        QtCore.QTimer.singleShot(0, self.showImage)
-        print("THREAD COMPLETE!")
+        if translated != None or translated != []:
+            self.isClicked = True
+            self.translatedFiles = translated
+            self.index = 0
+            self.newIndex = 0
+            QtCore.QTimer.singleShot(0, self.showImage)
+            print("THREAD COMPLETE!")
 
     def singleAfterThread(self, page):
-        self.translatedFiles[self.newIndex] = page
-        QtCore.QTimer.singleShot(0, self.showImage)
-        print("THREAD COMPLETE!")
+        if page != None:
+            self.translatedFiles[self.newIndex] = page
+            QtCore.QTimer.singleShot(0, self.showImage)
+            print("THREAD COMPLETE!")
 
     def manualAfterThread(self, e):
-        self.isClicked = True
-        QtCore.QTimer.singleShot(0, self.showImage)
-        self.im.connectDict = e[0]
-        self.im.translated = e[1]
-        self.im.japanese = e[2]
-        self.im.scaledDict = e[3]
-        self.index = 0
-        self.newIndex = 0
-        print("THREAD COMPLETE!")
+        if e != "ERROR":
+            self.isClicked = True
+            QtCore.QTimer.singleShot(0, self.showImage)
+            self.im.connectDict = e[0]
+            self.im.translated = e[1]
+            self.im.japanese = e[2]
+            self.im.scaledDict = e[3]
+            self.index = 0
+            self.newIndex = 0
+            print("THREAD COMPLETE!")
     
     def manualRetranslate(self, e):
         self.im.translated = e
@@ -697,13 +719,13 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
         elif self.im.flag and self.im.connectDict == {} and self.im.translated == {}:
             logger.info("Manual Translation")
             # print(self.im.pages)
-            self.worker = ManualTranslation(self.im.pages, self.ocr, self.translator, self.im.width(), self.im.height())
+            self.worker = ManualTranslation(self.im.pages, self.ocr, self.translator, self.originalLang, self.im.width(), self.im.height())
             self.worker.signals.result.connect(self.manualAfterThread)
             self.worker.signals.finished.connect(self.hideProgress)
             self.worker.signals.progress.connect(self.changeProgress)
             self.thread.start(self.worker)
         elif self.im.flag and self.im.connectDict != {} and self.im.translated != {}:
-            self.worker = ManualTranslation(self.im.japanese, self.ocr, self.translator, self.im.width(), self.im.height(), True)
+            self.worker = ManualTranslation(self.im.japanese, self.ocr, self.translator, self.originalLang, self.im.width(), self.im.height(), True)
             self.worker.signals.result.connect(self.manualRetranslate)
             self.worker.signals.finished.connect(self.hideProgress)
             self.worker.signals.progress.connect(self.changeProgress)
@@ -725,7 +747,7 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
             self.thread.start(self.worker)
         else:
             logger.info("Manga Translation")
-            self.worker = Translate(self.files, self.ocr, self.translator, self.combineN, self.combineO, self.range)
+            self.worker = Translate(self.files, self.ocr, self.translator, self.originalLang, self.combineN, self.combineO, self.range)
             self.worker.signals.result.connect(self.afterThread)
             self.worker.signals.stored.connect(self.changeTrans)
             self.worker.signals.booleans.connect(self.changeCheckThing)

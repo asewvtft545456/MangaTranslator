@@ -3,7 +3,7 @@ from PyQt5.QtCore import QRunnable, pyqtSignal, QObject
 import qimage2ndarray
 import numpy as np
 from pprint import pprint
-from RectangleManipulation import Rectangles
+from RectangleManipulation import *
 from FileHandling import FileHandler
 from Configer import Settings
 from Translation import MangaBag
@@ -37,47 +37,53 @@ class SingleTranslate(QRunnable):
 
     def locateText(self, image):
         myDict = self.manga.get_text(image)
-        rect = Rectangles()
         if self.shouldCombN and self.shouldCombO:
-            bounding = rect.neighborRect(myDict, self.range)
-            overlap = rect.combineOverlap(bounding)
+            bound1 = rectanglesCO(myDict, "c")
+            bound2 = combine_rectangles(bound1, self.range)
+            overlap1 = rectanglesCO(bound2, "o")
+            overlap = combine_overlapping_rectangles(overlap1)
             return overlap
         elif self.shouldCombN and not(self.shouldCombO):
-            bounding1 = rect.neighborRect(myDict, self.range)
-            return bounding1
+            bound1 = rectanglesCO(myDict, "c")
+            bound2 = combine_rectangles(bound1, self.range)
+            return bound2
         elif self.shouldCombO and not(self.shouldCombN):
-            overlap1 = rect.combineOverlap(myDict)
-            return overlap1
+            overlap1 = rectanglesCO(bound2, "o")
+            overlap2 = combine_overlapping_rectangles(overlap1)
+            return overlap2
         else:
             return myDict
 
     def run(self):
+        try:
+            fontSize, thickness = self.manga.getFontSizeThickness(self.imag1)
+            self.img1 = cv2.imread(r"{}".format(self.imag1))
+            self.image = cv2.cvtColor(self.img1, cv2.COLOR_BGR2RGB)
+            gotten_text = self.locateText(self.image)
+            self.cnt += self.portions
+            self.signals.progress.emit(self.cnt)
+            # pprint(gotten_text)
 
-        fontSize, thickness = self.manga.getFontSizeThickness(self.imag1)
-        self.img1 = cv2.imread(r"{}".format(self.imag1))
-        self.image = cv2.cvtColor(self.img1, cv2.COLOR_BGR2RGB)
-        gotten_text = self.locateText(self.image)
-        self.cnt += self.portions
-        self.signals.progress.emit(self.cnt)
-        # pprint(gotten_text)
+            finalText = self.manga.get_japanese(self.image, self.mocr, gotten_text, self.directory)
+            self.cnt += self.portions
+            self.signals.progress.emit(self.cnt)
+            # pprint(finalText)
 
-        finalText = self.manga.get_japanese(self.image, self.mocr, gotten_text, self.directory)
-        self.cnt += self.portions
-        self.signals.progress.emit(self.cnt)
-        # pprint(finalText)
+            newList = self.manga.translate(finalText, self.name, self.source)
+            self.cnt += self.portions
+            self.signals.progress.emit(self.cnt)
+            # pprint(newList)
+            addNewLine1 = self.manga.addNewLine(self.imag1, newList, gotten_text, cv2.FONT_HERSHEY_DUPLEX, fontSize, thickness)
 
-        newList = self.manga.translate(finalText, self.name, self.source)
-        self.cnt += self.portions
-        self.signals.progress.emit(self.cnt)
-        # pprint(newList)
-        addNewLine = self.manga.segment(newList)
-
-        final = self.manga.write(self.image, gotten_text, addNewLine, fontSize, thickness)
-        myarray = np.array(final)
-        image = qimage2ndarray.array2qimage(myarray)
-        self.cnt += self.portions
-        self.signals.progress.emit(self.cnt)
-
-        self.signals.result.emit(image)
-        self.handling.deleteFiles(self.directory)
-        self.signals.finished.emit()
+            final = self.manga.write(self.image, gotten_text, addNewLine1, fontSize, thickness)
+            myarray = np.array(final)
+            image = qimage2ndarray.array2qimage(myarray)
+            self.cnt += self.portions
+            self.signals.progress.emit(self.cnt)
+        except:
+            self.signals.finished.emit()
+        else:
+            self.signals.result.emit(image)
+            self.signals.finished.emit()
+        finally:
+            self.handling.deleteFiles(self.directory)

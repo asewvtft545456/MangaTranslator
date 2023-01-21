@@ -24,30 +24,35 @@ class Retranslate(QRunnable):
 
     def run (self):
         newImg = []
-        for image, rectangles, japanese in self.preList:
-            if japanese == {}:
-                newImg.append(image)
-                continue
+        try:
+            for image, rectangles, japanese in self.preList:
+                if japanese == {}:
+                    newImg.append(image)
+                    continue
 
-            fontSize, thickness = self.manga.getFontSizeThickness(image)
-            img1 = cv2.imread(r"{}".format(image))
-            cvImage = cv2.cvtColor(img1, cv2.COLOR_BGR2RGB)
-            self.cnt += self.portions
-            self.signals.progress.emit(self.cnt)
-            
-            copyJapanese = japanese.copy()
-            
-            newTranslate = self.manga.translate(copyJapanese, self.translator, self.source)
-            addNewLine = self.manga.segment(newTranslate)
-            self.cnt += self.portions
-            self.signals.progress.emit(self.cnt)
+                fontSize, thickness = self.manga.getFontSizeThickness(image)
+                img1 = cv2.imread(r"{}".format(image))
+                cvImage = cv2.cvtColor(img1, cv2.COLOR_BGR2RGB)
+                self.cnt += self.portions
+                self.signals.progress.emit(self.cnt)
+                
+                copyJapanese = japanese.copy()
+                pprint(copyJapanese)
+                
+                newTranslate = self.manga.translate(copyJapanese, self.translator, self.source)
+                addNewLine1 = self.manga.addNewLine(image, newTranslate, rectangles, cv2.FONT_HERSHEY_DUPLEX, fontSize, thickness)
+                self.cnt += self.portions
+                self.signals.progress.emit(self.cnt)
 
-            final = self.manga.write(cvImage, rectangles, addNewLine, fontSize, thickness)
-            self.cnt += self.portions
-            self.signals.progress.emit(self.cnt)
+                final = self.manga.write(cvImage, rectangles, addNewLine1, fontSize, thickness)
+                self.cnt += self.portions
+                self.signals.progress.emit(self.cnt)
 
-            myarray = np.array(final)
-            image1 = qimage2ndarray.array2qimage(myarray)
-            newImg.append(image1)
-        self.signals.result.emit(newImg)
-        self.signals.finished.emit()
+                myarray = np.array(final)
+                image1 = qimage2ndarray.array2qimage(myarray)
+                newImg.append(image1)
+        except:
+            self.signals.finished.emit()
+        else:
+            self.signals.result.emit(newImg)
+            self.signals.finished.emit()

@@ -14,7 +14,7 @@ except ModuleNotFoundError:
     import translators as ts
 
 class MangaBag:
-
+    
     def chronos(func):
         def get_time(*args, **kawrgs):
             start = time.time()
@@ -111,70 +111,65 @@ class MangaBag:
         if original == {}:
             return {}
         source = langauge
-        # print(source)
-        try:
-            if name == "DeepL":
-                for key in original:
-                    try:
-                        original[key] = deepl.translate(source_language=source.upper(), target_language="EN", text=original[key])
-                    except:
-                        original[key] = MyMemoryTranslator(source=source, target='en').translate(original[key])
-                return original
-            elif name == "MyMemory":
-                for key in original:
-                    try:
-                        original[key] = MyMemoryTranslator(source=source, target='en').translate(original[key])
-                    except:
-                        original[key] = deepl.translate(source_language=source.upper(), target_language="EN", text=original[key])
-                return original
-            elif name == "Google":
-                for jap in original:
-                    try:
-                        original[jap] = str(ts.google(original[jap]))
-                    except:
-                        original[jap] = str(ts.bing(original[jap]))
-                return original
-            elif name == "Bing":
-                for jap in original:
-                    try:
-                        original[jap] = str(ts.bing(original[jap]))
-                    except:
-                        original[key] = deepl.translate(source_language=source.upper(), target_language="EN", text=original[key])
-                return original
-            elif name == "Youdao":
-                for jap in original:
-                    try:
-                        original[jap] = str(ts.youdao(original[jap]))
-                    except:
-                        original[key] = deepl.translate(source_language=source.upper(), target_language="EN", text=original[key])
-                    time.sleep(5)
-                return original
-        except ConnectionError:
-                return "ConnectionError"
+        if name == "DeepL":
+            for key in original:
+                original[key] = deepl.translate(source_language="JA", target_language="EN", text=original[key])
+            return original
+        elif name == "MyMemory":
+            for key in original:
+                original[key] = MyMemoryTranslator(source="ja", target='en').translate(original[key])
+            return original
+        elif name == "Google":
+            for jap in original:
+                original[jap] = str(ts.google(original[jap]))
+            return original
+        elif name == "Bing":
+            for jap in original:   
+                original[jap] = str(ts.bing(original[jap]))
+            return original
+        elif name == "Youdao":
+            for jap in original:
+                original[jap] = str(ts.youdao(original[jap]))
+                time.sleep(5)
+            return original
     
-    def segment(self, list1):
-        if list1 == {}:
-            return {}
-        for line in list1:
-            newL= list(str(list1[line]))
-            s = ''
-            count = 0
-            if newL.count(" ")  > 3:
-                for x in range(len(newL)):
-                        if newL[x] == " ":
-                            count += 1
-                        if count == 2:
-                            newL[x] = "\n"
-                            count = 0
-                        s += newL[x]
+    def addNewLine(self, img, engDict, rectDict, font, scale, thickness):
+        newDict = {}
+        for key in rectDict:
+            coordinate, coordinate1 = tuple(rectDict[key])
+            x, y = coordinate
+            x1, y1 = coordinate1
+            newDict[key] = self.wrap_text_in_rectangle(img, engDict[key], x, y, (x1-x), (y1-y), font, scale, thickness)
+        return newDict
+
+    def wrap_text_in_rectangle(self, image, text, x, y, width, height, font_face, font_scale, thickness):
+        # Get the text size
+        (text_width, text_height), _ = cv2.getTextSize(text, font_face, font_scale, thickness)
+
+        # Calculate the number of lines needed to fit the text within the rectangle
+        lines = []
+        line = ""
+        for word in text.split(" "):
+            if cv2.getTextSize(line + word, font_face, font_scale, thickness)[0][0] <= width:
+                line += word + " "
             else:
-                for x in range(len(newL)):
-                        if newL[x] == " ":
-                            newL[x] = "\n"
-                            count = 0
-                        s += newL[x]
-            list1[line] = s
-        return list1
+                lines.append(line)
+                line = word + " "
+        lines.append(line)
+
+        return "\n".join(lines)
+
+
+    def getRatio(self, img):
+        img = cv2.imread(img)
+        aspect_ratio = 1
+        height, width, _ = img.shape
+        if width > height:
+            aspect_ratio = width / height
+        else:
+            aspect_ratio = height/ width
+        return aspect_ratio
+
     
     def write(self, img, dict1, list1, font, thick):
         if dict1 == {}:

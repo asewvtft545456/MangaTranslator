@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(613, 616)
+        MainWindow.resize(613, 574)
         MainWindow.setStyleSheet("")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setStyleSheet("*{\n"
@@ -179,7 +179,7 @@ class Ui_MainWindow(object):
         font.setFamily("Comic Sans MS")
         self.rectangleLabel.setFont(font)
         self.rectangleLabel.setObjectName("rectangleLabel")
-        self.innerSettings.addWidget(self.rectangleLabel)
+        self.innerSettings.addWidget(self.rectangleLabel, 0, QtCore.Qt.AlignHCenter)
         self.combineOverLap = QtWidgets.QCheckBox(self.AutoWidget)
         font = QtGui.QFont()
         font.setFamily("Comic Sans MS")
@@ -187,14 +187,14 @@ class Ui_MainWindow(object):
         self.combineOverLap.setStyleSheet("")
         self.combineOverLap.setChecked(True)
         self.combineOverLap.setObjectName("combineOverLap")
-        self.innerSettings.addWidget(self.combineOverLap)
+        self.innerSettings.addWidget(self.combineOverLap, 0, QtCore.Qt.AlignLeft)
         self.combineNeighbors = QtWidgets.QCheckBox(self.AutoWidget)
         font = QtGui.QFont()
         font.setFamily("Comic Sans MS")
         self.combineNeighbors.setFont(font)
         self.combineNeighbors.setStyleSheet("")
         self.combineNeighbors.setObjectName("combineNeighbors")
-        self.innerSettings.addWidget(self.combineNeighbors)
+        self.innerSettings.addWidget(self.combineNeighbors, 0, QtCore.Qt.AlignLeft)
         self.rangeLabel = QtWidgets.QLabel(self.AutoWidget)
         font = QtGui.QFont()
         font.setFamily("Comic Sans MS")
@@ -213,7 +213,7 @@ class Ui_MainWindow(object):
         self.singlePtranslate.setFont(font)
         self.singlePtranslate.setIconSize(QtCore.QSize(12, 12))
         self.singlePtranslate.setObjectName("singlePtranslate")
-        self.innerSettings.addWidget(self.singlePtranslate)
+        self.innerSettings.addWidget(self.singlePtranslate, 0, QtCore.Qt.AlignLeft)
         self.verticalLayout_6.addLayout(self.innerSettings)
         self.verticalLayout_2.addWidget(self.AutoWidget)
         self.manualButton = QtWidgets.QPushButton(self.side_menu)
@@ -368,14 +368,12 @@ class Ui_MainWindow(object):
         self.sortButton.setFont(font)
         self.sortButton.setObjectName("sortButton")
         self.verticalLayout_9.addWidget(self.sortButton)
-        self.verticalLayout_8 = QtWidgets.QVBoxLayout()
-        self.verticalLayout_8.setObjectName("verticalLayout_8")
         self.label = QtWidgets.QLabel(self.widget_2)
         font = QtGui.QFont()
         font.setFamily("Comic Sans MS")
         self.label.setFont(font)
         self.label.setObjectName("label")
-        self.verticalLayout_8.addWidget(self.label)
+        self.verticalLayout_9.addWidget(self.label)
         self.translateOptions = QtWidgets.QComboBox(self.widget_2)
         font = QtGui.QFont()
         font.setFamily("Comic Sans MS")
@@ -396,9 +394,6 @@ class Ui_MainWindow(object):
 "}\n"
 "QComboBox::down-arrow\n"
 "{\n"
-"    \n"
-"    \n"
-"    \n"
 "    image: url(:/newPrefix/down-chevron.png);\n"
 "    width: 10px;\n"
 "    height: 10px;\n"
@@ -408,8 +403,43 @@ class Ui_MainWindow(object):
         self.translateOptions.addItem("")
         self.translateOptions.addItem("")
         self.translateOptions.addItem("")
-        self.verticalLayout_8.addWidget(self.translateOptions)
-        self.verticalLayout_9.addLayout(self.verticalLayout_8)
+        self.verticalLayout_9.addWidget(self.translateOptions)
+        self.label_5 = QtWidgets.QLabel(self.widget_2)
+        font = QtGui.QFont()
+        font.setFamily("Comic Sans MS")
+        self.label_5.setFont(font)
+        self.label_5.setObjectName("label_5")
+        self.verticalLayout_9.addWidget(self.label_5)
+        self.languages = QtWidgets.QComboBox(self.widget_2)
+        font = QtGui.QFont()
+        font.setFamily("Comic Sans MS")
+        self.languages.setFont(font)
+        self.languages.setStyleSheet("QComboBox{\n"
+"border-color: rgb(85, 170, 255);\n"
+"}\n"
+"QComboBox::on{\n"
+"border: 2px solid #c2dbfe;\n"
+"}\n"
+"QComboBox::drop-down{\n"
+"border:0px;\n"
+"}\n"
+"QComboBox QListView\n"
+"{\n"
+"    border-style: none;\n"
+"    background-color: white;\n"
+"}\n"
+"QComboBox::down-arrow\n"
+"{\n"
+"    image: url(:/newPrefix/down-chevron.png);\n"
+"    width: 10px;\n"
+"    height: 10px;\n"
+"}")
+        self.languages.setObjectName("languages")
+        self.languages.addItem("")
+        self.languages.addItem("")
+        self.languages.addItem("")
+        self.languages.addItem("")
+        self.verticalLayout_9.addWidget(self.languages)
         self.advanced = QtWidgets.QPushButton(self.widget_2)
         font = QtGui.QFont()
         font.setFamily("Comic Sans MS")
@@ -604,6 +634,19 @@ class Ui_MainWindow(object):
         self.bar = QtWidgets.QProgressBar(self.main_body)
         self.bar.setMinimumSize(QtCore.QSize(200, 30))
         self.bar.setMaximumSize(QtCore.QSize(200, 30))
+        self.bar.setStyleSheet("QProgressBar {\n"
+"    border: 2px solid #3F51B5;\n"
+"    border-radius: 5px;\n"
+"    text-align: center;\n"
+"    font-weight: bold;\n"
+"}\n"
+"\n"
+"QProgressBar::chunk {\n"
+"    background-color: #3F51B5;\n"
+"    width: 10px;\n"
+"    margin: 0.5px;\n"
+"    border-radius:1px;\n"
+"}")
         self.bar.setProperty("value", 24)
         self.bar.setObjectName("bar")
         self.verticalLayout_4.addWidget(self.bar, 0, QtCore.Qt.AlignHCenter)
@@ -746,6 +789,11 @@ class Ui_MainWindow(object):
         self.translateOptions.setItemText(0, _translate("MainWindow", "Bing"))
         self.translateOptions.setItemText(1, _translate("MainWindow", "Google"))
         self.translateOptions.setItemText(2, _translate("MainWindow", "DeepL"))
+        self.label_5.setText(_translate("MainWindow", "From language:"))
+        self.languages.setItemText(0, _translate("MainWindow", "Japanese"))
+        self.languages.setItemText(1, _translate("MainWindow", "Korean"))
+        self.languages.setItemText(2, _translate("MainWindow", "Chinese"))
+        self.languages.setItemText(3, _translate("MainWindow", "Auto detect"))
         self.advanced.setText(_translate("MainWindow", "Advanced Option"))
         self.upload.setText(_translate("MainWindow", "Upload"))
         self.translate.setText(_translate("MainWindow", "Translate"))

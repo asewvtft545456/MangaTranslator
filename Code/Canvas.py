@@ -50,7 +50,9 @@ class Image(QtWidgets.QLabel):
                     if self.bg != "None":
                         qp.fillRect(self.pages[self.img][index], self.color[self.bg])
                     qp.setFont(QFont("times",self.fontNum));
-                    qp.drawText(QRectF(a, b, c, d), words, option=QTextOption())
+                    option = QTextOption()
+                    option.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+                    qp.drawText(QRectF(a, b, c, d), words, option)
 
             if not self.begin.isNull() and not self.end.isNull():
                 qp.drawRect(QRect(self.begin, self.end).normalized())

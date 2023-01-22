@@ -22,17 +22,17 @@ class SingleTranslate(QRunnable):
         self.imag1 = img
         self.setting = Settings()
         self.handling = FileHandler()
+        self.manga = MangaBag()
         self.name = translator
         self.shouldCombN = combN
         self.shouldCombO = combO
-        self.range = sliderNum
+        self.range = sliderNum * self.manga.getRatio(self.imag1[0]) + 4
         self.signals = Worker()
         self.directory = self.setting.cropText
         self.portions = 100/3
         self.cnt = 0
         self.mocr = mocr
         self.source = langauge
-        self.manga = MangaBag()
 
 
     def locateText(self, image):

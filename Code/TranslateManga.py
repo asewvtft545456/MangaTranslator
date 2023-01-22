@@ -26,18 +26,18 @@ class Translate(QRunnable):
         super(Translate, self).__init__()
         self.imag1 = img
         self.setting = Settings()
+        self.manga = MangaBag()
         self.handling = FileHandler()
         self.name = translator
         self.shouldCombN = combN
         self.shouldCombO = combO
-        self.range = sliderNum
+        self.range = sliderNum * self.manga.getRatio(self.imag1[0]) + 4
         self.signals = Worker()
         self.directory = self.setting.cropText
         self.portions = (100 / len(self.imag1))/3
         self.cnt = 0
         self.mocr = mocr
         self.source = None if language == "auto" else language
-        self.manga = MangaBag()
         self.ratio = 1
 
     
@@ -67,9 +67,6 @@ class Translate(QRunnable):
         try:
             for x in self.imag1:
                 fontSize, thickness = self.manga.getFontSizeThickness(x)
-                self.ratio = self.manga.getRatio(x) + 4
-                print(self.ratio)
-                self.range *= self.ratio
                 self.img1 = cv2.imread(r"{}".format(x))
                 self.image = cv2.cvtColor(self.img1, cv2.COLOR_BGR2RGB)
                 gotten_text = self.LocateText(self.image)

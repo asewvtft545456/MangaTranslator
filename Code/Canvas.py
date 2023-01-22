@@ -49,7 +49,7 @@ class Image(QtWidgets.QLabel):
                     a, b, c, d, = self.pages[self.img][index].getRect()
                     if self.bg != "None":
                         qp.fillRect(self.pages[self.img][index], self.color[self.bg])
-                    qp.setFont(QFont("times",self.fontNum));
+                    qp.setFont(QFont("Comic Sans MS",self.fontNum));
                     option = QTextOption()
                     option.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
                     qp.drawText(QRectF(a, b, c, d), words, option)

@@ -588,11 +588,15 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
                     qp = QtGui.QPainter(pix)
                     qp.setPen(QPen(self.im.color[self.im.textColor], 2, Qt.SolidLine))
                     qp.drawPixmap(pix.rect(), pix)
-                    qp.drawRects(self.im.scaledDict[img])
+                    if self.im.rect:
+                        qp.drawRects(self.im.scaledDict[img])
                     for index, words in enumerate(self.im.translated[self.im.connectDict[img]]):
-                        qp.fillRect(self.im.scaledDict[img][index], self.im.color[self.im.bg])
-                        qp.setFont(QFont("times",self.im.fontNum * 2))
-                        qp.drawText(self.im.scaledDict[img][index], words, option=QTextOption())
+                        if self.im.bg != "None":
+                            qp.fillRect(self.im.scaledDict[img][index], self.im.color[self.im.bg])
+                        qp.setFont(QFont("Comic Sans MS",self.im.fontNum * 2))
+                        option = QTextOption()
+                        option.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+                        qp.drawText(self.im.scaledDict[img][index], words, option)
                     imName = f"Translated\Truetrans{nums}.jpg"
                     imgDirectory.append(imName)
                     pix.save(imName)

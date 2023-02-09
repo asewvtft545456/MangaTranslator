@@ -7,7 +7,7 @@ Clone or download the repository.
 I recommend running the program within a virtual environment.
 
 If you're using VScode, open the repository, go to the command pallete, type "Create Environment", and click.
-Vscode will create the virtual environment and install everything in requirement.txt .
+Vscode will create the virtual environment and install everything in requirement.txt. If it doesn't type "pip install -r requirements.txt" in the terminal.
 
 If you don't have VScode, open the repo within your IDE and go to the terminal:
 1) Type "virtualenv venv"

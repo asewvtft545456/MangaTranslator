@@ -26,7 +26,7 @@ class SingleTranslate(QRunnable):
         self.name = translator
         self.shouldCombN = combN
         self.shouldCombO = combO
-        self.range = sliderNum * self.manga.getRatio(self.imag1[0]) + 4
+        self.range = sliderNum * self.manga.getRatio(self.imag1) + 4
         self.signals = Worker()
         self.directory = self.setting.cropText
         self.portions = 100/3

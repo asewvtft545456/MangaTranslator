@@ -158,7 +158,7 @@ class MangaBag:
         return data_dict
     
     def call_cohere(self, request):
-        co = cohere.ClientV2("n0X6DOEhNs2WS5cRNeYJv8U7Pnb5WMYSpmDINxXe")
+        co = cohere.ClientV2("api_key")
         response = co.chat(
             model="command-r-plus",
             messages=[

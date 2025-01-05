@@ -16,13 +16,14 @@ class Worker(QObject):
     stored = pyqtSignal(object)
     finished = pyqtSignal()
     progress = pyqtSignal(int)
+    pageProgress = pyqtSignal(str)
     booleans = pyqtSignal(object)
     lang = pyqtSignal(str)
 
 
 class Translate(QRunnable):
     
-    def __init__(self, img, mocr, translator,language, combN=False, combO=False, sliderNum=0):
+    def __init__(self, img:list , mocr, translator,language, combN=False, combO=False, sliderNum=0):
         super(Translate, self).__init__()
         self.imag1 = img
         self.setting = Settings()
@@ -64,8 +65,10 @@ class Translate(QRunnable):
     def run(self):
         finalImg = []
         backup = []
+        counter = 1
         try:
             for x in self.imag1:
+                self.signals.pageProgress.emit(f"Translating page {counter} of {len(self.imag1)}")
                 fontSize, thickness = self.manga.getFontSizeThickness(x)
                 self.img1 = cv2.imread(r"{}".format(x))
                 self.image = cv2.cvtColor(self.img1, cv2.COLOR_BGR2RGB)
@@ -86,7 +89,7 @@ class Translate(QRunnable):
                             self.source = langid.classify(y[0])[0]
                             break
 
-                newList = self.manga.translate(finalText, self.name, self.source)
+                newList = self.manga.translate(finalText, self.name, self.source, gotten_text)
                 self.cnt += self.portions
                 self.signals.progress.emit(self.cnt)
                 # pprint(newList)
@@ -100,6 +103,7 @@ class Translate(QRunnable):
                 self.cnt += self.portions
                 backup.append((x, gotten_text, finalTextcopy))
                 self.signals.progress.emit(self.cnt)
+                counter += 1
         except:
             logger.exception("ERROR")
             self.signals.finished.emit()

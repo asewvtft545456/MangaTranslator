@@ -7,7 +7,9 @@ import deepl
 import os
 import easyocr
 from PIL import Image
+import cohere
 from addText import add_text_to_image
+import ast
 try:
     import translators.server as ts
 except ModuleNotFoundError:
@@ -62,6 +64,7 @@ class MangaBag:
                 try:
                     img = Image.open((root+"\\"+ x).strip())
                     text = mocr(img)
+                    # print(text)
                     ts[(root+"\\"+ x).strip()] = text
                 except:
                     logger.exception("File Mystery")
@@ -107,7 +110,70 @@ class MangaBag:
                 continue
         return myDict
     
-    def translate(self, original, name, langauge):
+    def cohere(self, japanese_text, text_location):
+        translation_request = f"""
+                    translate the following text, extracted from a manga, with as much context as you can gather from the other japanese text
+                    and from any other context you can gather.
+                    Return in the format you received with the english translation:
+                    {japanese_text}
+                    Use the following below to know where the text bubble are to help you translate:
+                    {text_location}
+                    DO NOT ADD ANY ELSE. ONLY RETURN THE FORMAT I ASKED YOU TO.
+                    MAKE SURE THE NUMBER OF LINES OF YOUR OUTPUT IS EQUAL TO THE INPUT I GIVE YOU.
+                    Make sure the output is in the correct syntax so it can be converted to a dictionary using ast.literal_eval().
+                    Make sure it won't cause a keyError. I want the key of the return dictionalry to have double quotes in stead of single quotes.
+                    """
+        result = self.call_cohere(translation_request)
+        try:
+            data_dict = ast.literal_eval(result)
+        except SyntaxError:
+            logger.error("SYNTAX ERROR!!!")
+            data_dict = {}
+            for key in japanese_text:
+                context = f"""
+                Use the following extracted from a manga as context to translate a sentence.
+                context:
+                text :{japanese_text}\n
+                location of that text: {text_location}\n
+                Sentence to translate: {japanese_text[key]}
+                RETURN only the translated sentence nothing else.
+                """
+                data_dict[key] = self.call_cohere(context)
+
+
+        if len(data_dict) < len(japanese_text):
+            logger.error("KEY ERROR!!!")
+            for jt in japanese_text:
+                if jt not in data_dict:
+                    fix_key = f"""
+                    Translate the following line to english.
+                    sentence to translate: {japanese_text[jt]}
+                    use the text below as context to help you translate:
+                    {data_dict}
+                    Return only the translated sentence. nothing else
+                    """
+                    data_dict[jt] = self.call_cohere(fix_key)
+
+
+        return data_dict
+    
+    def call_cohere(self, request):
+        co = cohere.ClientV2("n0X6DOEhNs2WS5cRNeYJv8U7Pnb5WMYSpmDINxXe")
+        response = co.chat(
+            model="command-r-plus",
+            messages=[
+                {
+                    "role": "user",
+                    "content": f"""
+                    {request}
+                    """
+                }
+            ]
+        )
+        return response.message.content[0].text
+
+
+    def translate(self, original, name, langauge, location=None):
         if original == {}:
             return {}
         source = langauge
@@ -132,6 +198,8 @@ class MangaBag:
                 original[jap] = str(ts.youdao(original[jap]))
                 time.sleep(5)
             return original
+        elif name == "Cohere":
+            return self.cohere(original, location)
     
     def addNewLine(self, img, engDict, rectDict, font, scale, thickness):
         newDict = {}
@@ -169,6 +237,7 @@ class MangaBag:
         else:
             aspect_ratio = height/ width
         return aspect_ratio
+
 
     
     def write(self, img, dict1, list1, font, thick):

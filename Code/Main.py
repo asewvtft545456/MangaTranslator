@@ -43,12 +43,14 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
         self.isClicked = False
         self.shownSetting = False
         self.bar.setValue(0)
-        self.bar.setFormat("Translating....")
+        # self.bar.setFormat("Translating....")
         self.bar.setGeometry(self.width()//2-65, self.height()//2, 200, 30)
         self.bar.setVisible(False)
         self.bar.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.fontsize.setMaximum(15)
+        # self.translator = "Cohere"
         self.translator = "DeepL"
+        # self.translateOptions.setCurrentIndex(5)
         self.translateOptions.setCurrentIndex(2)
         self.range = 0
         self.combineN = False
@@ -88,6 +90,7 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setWindowIcon(QtGui.QIcon(":/newPrefix/translation.png"))
         self.translateOptions.addItem('Youdao')
         self.translateOptions.addItem('MyMemory')
+        self.translateOptions.addItem("Cohere")
         self.bGcolor.addItem("None")
         self.Form = QtWidgets.QWidget()
         self.ui = Ui_Form()
@@ -702,6 +705,9 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
         self.im.translated = e
         print("THREAD COMPLETE!")
     
+    def translatingCurrentPage(self, progress):
+        self.bar.setFormat(progress)
+
     def changeProgress(self, status):
         self.bar.setValue(status)
 
@@ -758,6 +764,7 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
             self.worker.signals.finished.connect(self.hideProgress)
             self.worker.signals.progress.connect(self.changeProgress)
             self.worker.signals.lang.connect(self.orgLang)
+            self.worker.signals.pageProgress.connect(self.translatingCurrentPage)
             self.thread.start(self.worker)
 
 

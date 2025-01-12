@@ -537,11 +537,7 @@ class interact(QtWidgets.QMainWindow, Ui_MainWindow):
             None,
             "QFileDialog.getOpenFileNames()",
             "",
-<<<<<<< HEAD
             "Image files (*.jpg *.png *.jpeg *.jfif)"
-=======
-            "Image files (*.jpg *.png *.jpeg)"
->>>>>>> 993d84d3cf0e7a46179c10ea1e5c23cf81ac46f1
         )
         if filenames != []:
             if self.files != [] and self.isClicked:
